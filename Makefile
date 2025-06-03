@@ -1,29 +1,32 @@
-SHELL=/bin/bash
+SHELL := /bin/bash
 
-CFLAGS := $(shell sdl2-config --cflags)
-LDFLAGS := $(shell sdl2-config --libs) -lm
+CC := gcc
+CFLAGS := -I/usr/local/include -Wall -Wextra -O2
+LDFLAGS := -L/usr/local/lib -lraylib -lm
 
-# run the code and clean up the junk
-run: boid_sim clean_obj
-	@./boid_sim
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := bin
 
-# Link the src code
-boid_sim: main.o
-	@cc main.c -o boid_sim $(LDFLAGS)
+SRC := $(wildcard $(SRC_DIR)/*.c)
+OBJ := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+BIN := $(BIN_DIR)/boid_sim
 
-# Compile the src code
-main.o: main.c
-	@cc -c main.c -o main.o $(CFLAGS)
+all: $(BIN)
 
+$(BIN): $(OBJ)
+	@mkdir -p $(BIN_DIR)
+	$(CC) $^ -o $@ $(LDFLAGS)
 
-# CLEAN ALL EXTRAS
-# Remove object files.
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) -c $< -o $@ $(CFLAGS)
+
+run: $(BIN)
+	@./$(BIN)
+
 clean_obj:
-	@find . -name '*.o' -type f -delete
+	@rm -rf $(OBJ_DIR)
 
-
-
-
-# Remove anything compiled
 clean: clean_obj
-	@rm -f boid_sim
+	@rm -rf $(BIN_DIR)
