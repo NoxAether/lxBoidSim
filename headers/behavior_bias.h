@@ -3,6 +3,6 @@
 
 #include "boid_core.h"
 
-void apply_bias(Boid *boid_array);
+void apply_bias(Boid *boid_array, int start, int end);
 
 #endif

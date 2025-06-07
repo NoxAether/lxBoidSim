@@ -6,8 +6,8 @@
 
 // Turning based on bounds from edge to screen?
 void check_bounds(Boid *boid_array, int left_margin, int right_margin,
-                  int top_margin, int bottom_margin) {
-    for (int i = 0; i < BOID_COUNT; i++) {
+                  int top_margin, int bottom_margin, int start, int end) {
+    for (int i = start; i < end; i++) {
         // Shortcut
         Boid *bptr = &boid_array[i];
 
@@ -25,8 +25,8 @@ void check_bounds(Boid *boid_array, int left_margin, int right_margin,
     }
 }
 
-void limit_speed(Boid *boid_array) {
-    for (int i = 0; i < BOID_COUNT; ++i) {
+void limit_speed(Boid *boid_array, int start, int end) {
+    for (int i = start; i < end; i++) {
         Boid *bptr = &boid_array[i];
 
         float vx = bptr->x_vel, vy = bptr->y_vel;
@@ -45,10 +45,11 @@ void limit_speed(Boid *boid_array) {
     }
 }
 
-void update_position(Boid *boid_array, float deltaTime) {
-    for (int i = 0; i < BOID_COUNT; i++) {
+void update_position(Boid *boid_array, int start, int end) {
+    float delta_time = DELTA_TIME;
+    for (int i = start; i < end; i++) {
         Boid *bptr = &boid_array[i];
-        bptr->x_pos += bptr->x_vel * deltaTime * SPEED_SCALE;
-        bptr->y_pos += bptr->y_vel * deltaTime * SPEED_SCALE;
+        bptr->x_pos += bptr->x_vel * delta_time * SPEED_SCALE;
+        bptr->y_pos += bptr->y_vel * delta_time * SPEED_SCALE;
     }
 }

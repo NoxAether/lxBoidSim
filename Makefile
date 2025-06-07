@@ -2,7 +2,7 @@ SHELL := /bin/bash
 
 CC := gcc
 CFLAGS := -I/usr/local/include -Wall -Wextra -O2
-LDFLAGS := -L/usr/local/lib -lraylib -lm
+LDFLAGS := -L/usr/local/lib -lraylib -lm -pthread
 
 SRC_DIR := src
 OBJ_DIR := obj

@@ -4,11 +4,9 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../headers/behavior_bias.h"
-#include "../headers/big_check_update.h"
 #include "../headers/boid_core.h"
 #include "../headers/defs.h"
-#include "../headers/small_check_update.h"
+#include "../headers/thread_management.h"
 
 int main(void) {
 
@@ -23,22 +21,13 @@ int main(void) {
     SetTargetFPS(FPS);
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Boids Simulation");
 
-    // Margins for boundary checking
-    int left_margin = 50;
-    int right_margin = SCREEN_WIDTH - 50;
-    int top_margin = 50;
-    int bottom_margin = SCREEN_HEIGHT - 50;
+    generate_thread_objects(boid_array);
 
     while (!WindowShouldClose()) {
-        float deltaTime = 1.0f / (float)FPS;
 
-        boid_collision(boid_array);
-        boid_cohesion(boid_array);
-        apply_bias(boid_array);
-        limit_speed(boid_array);
-        update_position(boid_array, deltaTime);
-        check_bounds(boid_array, left_margin, right_margin, top_margin,
-                     bottom_margin);
+        // parallel boid update
+        run_threads(); // Start threads
+        end_threads(); // Wait for finish
 
         BeginDrawing();
         ClearBackground(BLACK);
@@ -57,6 +46,7 @@ int main(void) {
         EndDrawing();
     }
 
+    cleanup_threads();
     freeBoidArray(boid_array);
     boid_array = NULL;
 

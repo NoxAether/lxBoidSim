@@ -2,8 +2,8 @@
 
 #include "../headers/big_check_update.h"
 
-void boid_cohesion(Boid *boid_array) {
-    for (int i = 0; i < BOID_COUNT; i++) {
+void boid_cohesion(Boid *boid_array, int start, int end) {
+    for (int i = start; i < end; i++) {
         Boid *bptri = &boid_array[i];
 
         bptri->xpos_avg = 0;
@@ -46,8 +46,8 @@ void boid_cohesion(Boid *boid_array) {
     }
 }
 
-void boid_collision(Boid *boid_array) {
-    for (int i = 0; i < BOID_COUNT; i++) {
+void boid_collision(Boid *boid_array, int start, int end) {
+    for (int i = start; i < end; i++) {
         Boid *bptri = &boid_array[i];
         bptri->close_dx = 0;
         bptri->close_dy = 0;
@@ -74,7 +74,7 @@ void boid_collision(Boid *boid_array) {
         bptri->y_vel = bptri->y_vel;
     }
 
-    for (int i = 0; i < BOID_COUNT; i++) {
+    for (int i = start; i < end; i++) {
         Boid *bptri = &boid_array[i];
 
         float speed =

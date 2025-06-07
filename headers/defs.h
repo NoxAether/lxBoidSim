@@ -24,12 +24,15 @@
 #define PROTECTED_RANGE_SQUARED (PROTECTED_RANGE * PROTECTED_RANGE)
 #define BOID_COUNT 10000
 #define SPEED_SCALE 100.0f
+#define MAX_THREADS 8
+#define MAX_CHUNK_SIZE 2000
 
 // Screen
-#define SCREEN_WIDTH 2440
-#define SCREEN_HEIGHT 940
+#define SCREEN_WIDTH 1440
+#define SCREEN_HEIGHT 1080
 
 // Raylib
 #define FPS 60
+#define DELTA_TIME (1.0f / (float)FPS);
 
 #endif

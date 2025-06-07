@@ -3,8 +3,8 @@
 #include "../headers/behavior_bias.h"
 #include "../headers/defs.h"
 
-void apply_bias(Boid *boid_array) {
-    for (int i = 0; i < BOID_COUNT; i++) {
+void apply_bias(Boid *boid_array, int start, int end) {
+    for (int i = start; i < end; i++) {
         Boid *bptr = &boid_array[i];
 
         if (bptr->is_scout_group_1) {

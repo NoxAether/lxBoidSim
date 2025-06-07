@@ -4,7 +4,7 @@
 #include "boid_core.h"
 #include "defs.h"
 
-void boid_cohesion(Boid *boid_array);
-void boid_collision(Boid *boid_array);
+void boid_cohesion(Boid *boid_array, int start, int end);
+void boid_collision(Boid *boid_array, int start, int end);
 
 #endif
