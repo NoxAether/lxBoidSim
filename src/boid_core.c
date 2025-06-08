@@ -31,6 +31,7 @@ Boid *createBoidArray(void) {
         bptr->biasval = DEFAULT_BIAS;
         bptr->is_scout_group_1 =
             rand() % 2; // Randomly assign to scout group 1 or 2
+        bptr->type = BOID_TYPE_BASIC;
     }
 
     printf("Boid array creation successful\n");

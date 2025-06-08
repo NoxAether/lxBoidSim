@@ -14,6 +14,7 @@ static int thread_count = 0;
 
 static int get_available_threads() {
     long n = sysconf(_SC_NPROCESSORS_ONLN);
+    printf("Threads: %d\n", (int)n);
     return (n > 0) ? (int)n : 8;
 }
 

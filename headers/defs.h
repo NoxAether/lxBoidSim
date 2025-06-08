@@ -28,7 +28,7 @@
 
 // Screen
 #define SCREEN_WIDTH 1440
-#define SCREEN_HEIGHT 1080
+#define SCREEN_HEIGHT 960
 
 // Raylib
 #define FPS 60

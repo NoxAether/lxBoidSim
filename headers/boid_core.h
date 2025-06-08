@@ -1,7 +1,11 @@
 #ifndef BOID_CORE_H
 #define BOID_CORE_H
 
-// The individual "bird"
+// The individual boid
+
+// The different types of boid
+typedef enum { BOID_TYPE_BASIC, BOID_TYPE_SCOUT } TYPE;
+
 typedef struct {
 
     // Position
@@ -19,6 +23,9 @@ typedef struct {
     // Behaviour
     float biasval;
     int is_scout_group_1; // 1 or 0 for scout groups;
+
+    // boid type
+    TYPE type;
 
 } Boid;
 
