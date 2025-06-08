@@ -7,20 +7,27 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static threadStruct *threads = NULL;
 static int thread_count = 0;
 
+static int get_available_threads() {
+    long n = sysconf(_SC_NPROCESSORS_ONLN);
+    return (n > 0) ? (int)n : 8;
+}
+
 void generate_thread_objects(Boid *boid_array) {
     int boid_count = BOID_COUNT;
     int base_chunk_size, remainder;
+    int max_threads = get_available_threads();
 
-    if (boid_count <= MAX_CHUNK_SIZE * MAX_THREADS) {
+    if (boid_count <= MAX_CHUNK_SIZE * max_threads) {
         thread_count = (boid_count + MAX_CHUNK_SIZE - 1) / MAX_CHUNK_SIZE;
         base_chunk_size = MAX_CHUNK_SIZE;
         remainder = boid_count % base_chunk_size;
     } else {
-        thread_count = MAX_THREADS;
+        thread_count = max_threads;
         base_chunk_size = boid_count / thread_count;
         remainder = boid_count % thread_count;
     }
@@ -33,7 +40,7 @@ void generate_thread_objects(Boid *boid_array) {
     for (int i = 0; i < thread_count; i++) {
         int chunk_size = base_chunk_size;
 
-        if (boid_count > MAX_CHUNK_SIZE * MAX_THREADS) {
+        if (boid_count > MAX_CHUNK_SIZE * max_threads) {
             if (i < remainder)
                 chunk_size += 1;
         } else {
