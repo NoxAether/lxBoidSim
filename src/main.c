@@ -5,9 +5,12 @@
 #include <time.h>
 
 #include "../headers/boid_core.h"
+#include "../headers/controls.h"
 #include "../headers/defs.h"
 #include "../headers/drawing.h"
+#include "../headers/player.h"
 #include "../headers/thread_management.h"
+#include "../headers/world.h"
 
 int main(void) {
 
@@ -24,16 +27,32 @@ int main(void) {
 
     generate_thread_objects(boid_array);
 
+    Player player = core_camera();
+
+    DisableCursor();
+
     while (!WindowShouldClose()) {
 
         // parallel boid update
         run_threads(); // Start threads
         end_threads(); // Wait for finish
 
+        core_input(&player);
+
+        UpdateCamera(&player.camera, player.camera_mode);
+
         // drawing
         BeginDrawing();
 
+        BeginMode3D(player.camera);
+
+        draw_world();
+
         draw_all(boid_array);
+
+        draw_player(player);
+
+        EndMode3D();
 
         EndDrawing();
     }

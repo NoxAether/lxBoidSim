@@ -1,4 +1,5 @@
 #include <math.h>
+#include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -19,8 +20,8 @@ Boid *createBoidArray(void) {
         Boid *bptr = &boid_array[i];
 
         // Initialise values inside the struct
-        bptr->x_pos = (float)(rand() % SCREEN_WIDTH);
-        bptr->y_pos = (float)(rand() % SCREEN_HEIGHT);
+        bptr->x_pos = (float)GetRandomValue(0, SCREEN_WIDTH);
+        bptr->y_pos = (float)GetRandomValue(0, SCREEN_HEIGHT);
         bptr->x_vel = cosf(angle) * speed;
         bptr->y_vel = sinf(angle) * speed;
         bptr->close_dx = 0;
@@ -29,9 +30,9 @@ Boid *createBoidArray(void) {
         bptr->ypos_avg = 0;
         bptr->neighboring_boids = 0;
         bptr->biasval = DEFAULT_BIAS;
-        bptr->is_scout_group_1 =
-            rand() % 2; // Randomly assign to scout group 1 or 2
-        bptr->type = BOID_TYPE_BASIC;
+        bptr->is_scout_group_1 = GetRandomValue(0, 1);
+
+        bptr->z_pos = GetRandomValue(-5, 5);
     }
 
     printf("Boid array creation successful\n");

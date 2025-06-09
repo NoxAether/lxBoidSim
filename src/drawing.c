@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <raymath.h>
 #include <stdio.h>
 
 #include "../headers/boid_core.h"
@@ -6,16 +7,25 @@
 #include "../headers/drawing.h"
 
 // shared shape templates
-static const Triangle SHAPE_BASIC = {
-    .v1 = {0.0f, -0.5f},
-    .v2 = {-0.5f, 0.5f},
-    .v3 = {0.5f, 0.5f},
+static const Triangle3D TRIANGLES_BASIC[] = {
+    {{0, 0.3f, 0}, {-0.2f, -0.3f, -0.2f}, {0.2f, -0.3f, -0.2f}}, // front
+    {{0, 0.3f, 0}, {0.2f, -0.3f, -0.2f}, {0.2f, -0.3f, 0.2f}},   // right
+    {{0, 0.3f, 0}, {0.2f, -0.3f, 0.2f}, {-0.2f, -0.3f, 0.2f}},   // back
+    {{0, 0.3f, 0}, {-0.2f, -0.3f, 0.2f}, {-0.2f, -0.3f, -0.2f}}, // left
 };
 
-static const Triangle SHAPE_SCOUT = {
-    .v1 = {0.0f, -0.7f}, .v2 = {-0.6f, 0.6f}, .v3 = {0.6f, 0.6f}};
+static const BoidShape3D SHAPE_BASIC = {
+    .triangles = TRIANGLES_BASIC,
+    .triangle_count = 4,
+};
 
-static const Triangle *get_boid_shape(const Boid *bptr) {
+// Reuse basic for SCOUT for now
+static const BoidShape3D SHAPE_SCOUT = {
+    .triangles = TRIANGLES_BASIC,
+    .triangle_count = 4,
+};
+
+static const BoidShape3D *get_boid_shape(const Boid *bptr) {
     // Get the boid type
     switch (bptr->type) {
 
@@ -28,27 +38,38 @@ static const Triangle *get_boid_shape(const Boid *bptr) {
     default: {
         fprintf(stderr, "No shape could be determined\n");
         return NULL;
-    }
+    };
     }
 }
 
 void draw_all(Boid *boid_array) {
 
+    Color colors[BOID_COUNT] = {0};
     ClearBackground(BLACK);
 
     for (int i = 0; i < BOID_COUNT; i++) {
+        colors[i] = (Color){(unsigned char)GetRandomValue(0, 50),
+                            (unsigned char)GetRandomValue(0, 100),
+                            (unsigned char)GetRandomValue(200, 255), 255};
+
         Boid *bptr = &boid_array[i];
-        const Triangle *shape = get_boid_shape(bptr);
 
-        Vector2 top = {bptr->x_pos + shape->v1.x,
-                       bptr->y_pos + shape->v1.y}; // top
+        const BoidShape3D *shape = get_boid_shape(bptr);
 
-        Vector2 bot_left = {bptr->x_pos + shape->v2.x,
-                            bptr->y_pos + shape->v2.y}; // bottom left
+        if (!shape)
+            continue;
 
-        Vector2 bot_right = {bptr->x_pos + shape->v3.x,
-                             bptr->y_pos + shape->v3.y}; // bottom right
+        Vector3 offset = {bptr->x_pos, bptr->z_pos + 100, bptr->y_pos};
+        float scale = 5.0f;
 
-        DrawTriangleLines(top, bot_left, bot_right, WHITE);
+        for (int t = 0; t < shape->triangle_count; t++) {
+            Vector3 v1 =
+                Vector3Add(Vector3Scale(shape->triangles[t].v1, scale), offset);
+            Vector3 v2 =
+                Vector3Add(Vector3Scale(shape->triangles[t].v2, scale), offset);
+            Vector3 v3 =
+                Vector3Add(Vector3Scale(shape->triangles[t].v3, scale), offset);
+            DrawTriangle3D(v1, v2, v3, colors[i]);
+        }
     }
 }

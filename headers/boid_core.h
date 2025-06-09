@@ -9,12 +9,12 @@ typedef enum { BOID_TYPE_BASIC, BOID_TYPE_SCOUT } TYPE;
 typedef struct {
 
     // Position
-    float x_pos, y_pos;
+    float x_pos, y_pos, z_pos;
     float close_dx, close_dy;
     float xpos_avg, ypos_avg;
 
     // Velocity
-    float x_vel, y_vel;
+    float x_vel, y_vel, z_vel;
     float xvel_avg, yvel_avg;
 
     // Proximity

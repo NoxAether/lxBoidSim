@@ -73,8 +73,7 @@ static void *core_sim_thrfn(void *args) {
     apply_bias(thread_array->array, start, end);
     limit_speed(thread_array->array, start, end);
     update_position(thread_array->array, start, end);
-    check_bounds(thread_array->array, 50, SCREEN_WIDTH - 50, 50,
-                 SCREEN_HEIGHT - 50, start, end);
+    check_bounds(thread_array->array, -150, 150, 90, 260, start, end);
 
     return NULL;
 }
