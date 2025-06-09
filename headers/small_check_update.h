@@ -1,5 +1,5 @@
 #ifndef SMALL_CHECK_UPDATE_H
-#define CHECK_POS_H
+#define SMALL_CHECK_UPDATE_H
 
 #include "boid_core.h"
 
