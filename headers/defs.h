@@ -32,6 +32,6 @@
 
 // Raylib
 #define FPS 60
-#define DELTA_TIME (1.0f / (float)FPS);
+#define DELTA_TIME (1.0f / (float)FPS)
 
 #endif
