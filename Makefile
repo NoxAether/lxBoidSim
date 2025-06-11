@@ -1,32 +1,51 @@
 SHELL := /bin/bash
 
 CC := gcc
-CFLAGS := -I/usr/local/include -Wall -Wextra -O2
+CFLAGS_MAIN := -I/usr/local/include -Wall -Wextra -O2
+CFLAGS_DEBUG := -I/usr/local/include -O0 -g
+
 LDFLAGS := -L/usr/local/lib -lraylib -lm -pthread
 
 SRC_DIR := src
+
 OBJ_DIR := obj
+OBJ_DIR_DEB := obj_deb
+
 BIN_DIR := bin
 
 SRC := $(wildcard $(SRC_DIR)/*.c)
-OBJ := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
-BIN := $(BIN_DIR)/boid_sim
+OBJ1 := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
+OBJ2 := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR_DEB)/%.o, $(SRC))
 
-all: $(BIN)
+BIN1 := $(BIN_DIR)/boid_app
+BIN2 := $(BIN_DIR)/boid_debug
 
-$(BIN): $(OBJ)
+all: $(BIN1) $(BIN2)
+
+$(BIN1): $(OBJ1)
 	@mkdir -p $(BIN_DIR)
+	$(CC) $^ -o $@ $(LDFLAGS)
+
+# Should already have the BIN_DIR created.
+$(BIN2): $(OBJ2)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
-	$(CC) -c $< -o $@ $(CFLAGS)
+	$(CC) -c $< -o $@ $(CFLAGS_MAIN)
 
-run: $(BIN)
-	@./$(BIN)
+$(OBJ_DIR_DEB)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR_DEB)
+	$(CC) -c $< -o $@ $(CFLAGS_DEBUG)
+
+
+
+run: $(BIN1)
+	@./$(BIN1)
 
 clean_obj:
 	@rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR_DEB)
 
 clean: clean_obj
 	@rm -rf $(BIN_DIR)
