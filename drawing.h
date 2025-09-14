@@ -1,7 +1,7 @@
 #ifndef DRAWING_H
 #define DRAWING_H
 
-#include "../headers/boid_core.h"
+#include "boid_core.h"
 
 #include <raylib.h>
 

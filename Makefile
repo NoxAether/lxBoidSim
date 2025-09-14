@@ -1,51 +1,57 @@
-SHELL := /bin/bash
+# Makefile for CUDA Boids Simulation
 
-CC := gcc
-CFLAGS_MAIN := -I/usr/local/include -Wall -Wextra -O2
-CFLAGS_DEBUG := -I/usr/local/include -O0 -g
+# Compiler and flags
+NVCC = nvcc
+CXX = g++
+NVCC_FLAGS = -arch=$(CUDA_ARCH) -O3 -std=c++17
+CXX_FLAGS = -O3 -std=c++23 -Wno-missing-braces -Wno-deprecated-gpu-targets
 
-LDFLAGS := -L/usr/local/lib -lraylib -lm -pthread
+# CUDA architecture (adjust based on your GPU)
+CUDA_ARCH = sm_86
 
-SRC_DIR := src
+# Include paths
+RAYLIB_INCLUDE = -I/usr/local/include
+CUDA_INCLUDE = -I/usr/local/cuda/include
+INCLUDE_PATHS = -I./ $(RAYLIB_INCLUDE) $(CUDA_INCLUDE)
 
-OBJ_DIR := obj
-OBJ_DIR_DEB := obj_deb
+# Library paths
+RAYLIB_LIB = -L/usr/local/lib
+CUDA_LIB = -L/usr/local/cuda/lib64
+LIB_PATHS = $(RAYLIB_LIB) $(CUDA_LIB)
 
-BIN_DIR := bin
+# Libraries to link
+LIBS = -lraylib -lcudart -lm -lGL -lpthread -ldl -lrt -lX11
 
-SRC := $(wildcard $(SRC_DIR)/*.c)
-OBJ1 := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
-OBJ2 := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR_DEB)/%.o, $(SRC))
+# Source files
+# (Assuming your other files are .cpp, change if they are .c)
+CUDA_SOURCES = simulation_kernels.cu main_cuda.cu cuda_management.cu
+CPP_SOURCES = $(wildcard *.cpp)
 
-BIN1 := $(BIN_DIR)/boid_app
-BIN2 := $(BIN_DIR)/boid_debug
+# Object files
+CUDA_OBJS = $(CUDA_SOURCES:.cu=.o)
+CPP_OBJS = $(CPP_SOURCES:.cpp=.o)
+OBJS = $(CUDA_OBJS) $(CPP_OBJS)
 
-all: $(BIN1) $(BIN2)
+# Executable name
+TARGET = cuda_boids
 
-$(BIN1): $(OBJ1)
-	@mkdir -p $(BIN_DIR)
-	$(CC) $^ -o $@ $(LDFLAGS)
+# Default target
+all: $(TARGET)
 
-# Should already have the BIN_DIR created.
-$(BIN2): $(OBJ2)
-	$(CC) $^ -o $@ $(LDFLAGS)
+# Link the target
+$(TARGET): $(OBJS)
+	$(NVCC) $(LIB_PATHS) $(OBJS) -o $@ $(LIBS)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) -c $< -o $@ $(CFLAGS_MAIN)
+# Compile CUDA source files
+%.o: %.cu
+	$(NVCC) $(NVCC_FLAGS) $(INCLUDE_PATHS) -c $< -o $@
 
-$(OBJ_DIR_DEB)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR_DEB)
-	$(CC) -c $< -o $@ $(CFLAGS_DEBUG)
+# Compile C++ source files
+%.o: %.cpp
+	$(CXX) $(CXX_FLAGS) $(INCLUDE_PATHS) -c $< -o $@
 
+# Clean up
+clean:
+	rm -f $(OBJS) $(TARGET)
 
-
-run: $(BIN1)
-	@./$(BIN1)
-
-clean_obj:
-	@rm -rf $(OBJ_DIR)
-	@rm -rf $(OBJ_DIR_DEB)
-
-clean: clean_obj
-	@rm -rf $(BIN_DIR)
+.PHONY: all clean

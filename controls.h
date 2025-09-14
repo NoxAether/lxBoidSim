@@ -4,7 +4,7 @@
 #include <raylib.h>
 #include <rcamera.h>
 
-#include "../headers/player.h"
+#include "player.h"
 
 void core_input(Player *player);
 
